@@ -1,5 +1,8 @@
 from maya import cmds
-import maya.api.OpenMaya as om
+import maya.OpenMaya as om
+
+import pymel.core as pm
+
 
 class FootRoll(object):
     SIDE = "l"
@@ -50,8 +53,24 @@ class FootRoll(object):
         cmds.setAttr("{0}.translate".format(ctrl[0]), xCoord, self.GRND_HGT_OFFSET, zCoord)
         cmds.setAttr("{0}.scale".format(ctrl[0]), scale, scale, scale)
         
-        
-        
+    def show(self):
+        print("Showing the Foot Roll WIndow")
 
-fr = FootRoll()
-#fr.assign_ik()
+
+
+if __name__ == "__main__":
+    main_window = pm.language.melGlobals['gMainWindow']
+
+    menu_obj = "JaysToolsMenu"
+    menu_label = "Jays Custom Tools"
+
+    if pm.menu(menu_obj, label=menu_label, exists=True, parent=main_window):
+        pm.deleteUI(pm.menu(menu_obj, e=True, deleteAllItems=True))
+
+    custom_tools_menu = pm.menu(menu_obj, label=menu_label, parent=main_window, tearOff=True)
+
+    pm.menuItem(label="Rigging", subMenu=True, parent=custom_tools_menu, tearOff=True)
+    pm.menuItem(label="Auto Foot Roll Tool", command="FootRoll().show()")
+    pm.setParent('..', menu=True)
+
+    pm.menuItem(label="Test", command="print 'This is a test'")
